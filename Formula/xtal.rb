@@ -3,28 +3,28 @@
 class Xtal < Formula
   desc "Análisis de circuitos y consolidación de datos en informes LaTeX"
   homepage "https://github.com/mcorcos/xtal"
-  version "0.1.1"
+  version "0.1.2"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/mcorcos/xtal/releases/download/v0.1.1/xtal-0.1.1-aarch64-apple-darwin.tar.gz"
-      sha256 "b8898ae7be248e8ca93ebfd398818730155e61a138e72ff018541e22a4377668"
+      url "https://github.com/mcorcos/xtal/releases/download/v0.1.2/xtal-0.1.2-aarch64-apple-darwin.tar.gz"
+      sha256 "d34f4570729ea4eda303d7a1f7d8923bd37d3832d1a1f298cd0543699efad473"
     end
     on_intel do
-      url "https://github.com/mcorcos/xtal/releases/download/v0.1.1/xtal-0.1.1-x86_64-apple-darwin.tar.gz"
-      sha256 "1d966a3c8635511ebac209d0b7b85113d8f272f849f1db4e9a560793493d3426"
+      url "https://github.com/mcorcos/xtal/releases/download/v0.1.2/xtal-0.1.2-x86_64-apple-darwin.tar.gz"
+      sha256 "864f205c86d6290701499938befd238f745b37dbf5dce96e7e9dd8f43659da60"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/mcorcos/xtal/releases/download/v0.1.1/xtal-0.1.1-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "be97bc4031c833ff71a706eec1ec42ba0f06deb52a13916702194d773af92237"
+      url "https://github.com/mcorcos/xtal/releases/download/v0.1.2/xtal-0.1.2-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "5d30a60f5b73a4aca7771663ce406768fb6cf7da597b3331bb4adfa421828989"
     end
     on_intel do
-      url "https://github.com/mcorcos/xtal/releases/download/v0.1.1/xtal-0.1.1-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "1ca4f5534dd0953e0344c1e4d175496517971b300f27cf577262a066ff24dd7d"
+      url "https://github.com/mcorcos/xtal/releases/download/v0.1.2/xtal-0.1.2-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "352d17558570d8ed9e5a5df4104776854f61a512d5b60ece3c32e16814ebc309"
     end
   end
 
