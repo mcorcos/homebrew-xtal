@@ -1,0 +1,77 @@
+# Mantiene Formula/xtal.rb apuntando a la última Release de mcorcos/xtal.
+#
+# ¿Por qué el tap se actualiza solo en vez de que el repo principal le pushee la
+# fórmula? Porque escribir desde otro repositorio necesita un Personal Access Token
+# guardado como secret, y un token con permiso de escritura viviendo en los secrets de
+# un repo público es un riesgo que este proyecto no necesita correr. Mirando la Release
+# desde acá, el GITHUB_TOKEN del propio repo alcanza y no hay ningún secret que cuidar.
+#
+# El costo es que la fórmula puede tardar hasta una hora en reflejar una Release nueva.
+# Para que salga ya, se dispara el workflow a mano (Actions -> Run workflow).
+name: Actualizar la fórmula
+
+on:
+  schedule:
+    # A y 17 de cada hora. GitHub puede demorar los schedules unos minutos: no importa.
+    - cron: "17 * * * *"
+  workflow_dispatch:
+  # Permite que el repo principal lo dispare, si algún día se carga un token allá.
+  repository_dispatch:
+    types: [xtal-release]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-formula
+  cancel-in-progress: false
+
+jobs:
+  update:
+    name: regenerar Formula/xtal.rb
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolver la última version publicada
+        id: v
+        run: |
+          set -euo pipefail
+          TAG="$(curl -fsSL -H 'Accept: application/vnd.github+json' \
+                 https://api.github.com/repos/mcorcos/xtal/releases/latest \
+                 | grep -m1 '"tag_name"' \
+                 | sed -E 's/.*"tag_name" *: *"([^"]+)".*/\1/')"
+          if [ -z "$TAG" ]; then
+            echo "::error::No pude resolver la última Release de mcorcos/xtal."
+            exit 1
+          fi
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+          echo "Última version publicada: ${TAG}"
+
+      - name: Renderizar la fórmula
+        env:
+          VERSION: ${{ steps.v.outputs.version }}
+        run: |
+          set -euo pipefail
+          # La plantilla vive en el repo principal: un solo lugar donde tocarla.
+          curl -fsSL -o /tmp/render-formula.sh \
+            https://raw.githubusercontent.com/mcorcos/xtal/main/packaging/homebrew/render-formula.sh
+          mkdir -p Formula
+          bash /tmp/render-formula.sh "$VERSION" --from-release > Formula/xtal.rb
+          cat Formula/xtal.rb
+
+      - name: Commitear si cambió algo
+        env:
+          VERSION: ${{ steps.v.outputs.version }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/xtal.rb
+          # Si la fórmula ya apuntaba a esta version, no hay nada que commitear.
+          if git diff --staged --quiet; then
+            echo "La fórmula ya está en ${VERSION}: no hago nada."
+            exit 0
+          fi
+          git commit -m "xtal ${VERSION}"
+          git push
