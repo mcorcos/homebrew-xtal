@@ -1,4 +1,6 @@
-# Mantiene Formula/xtal.rb apuntando a la última Release de mcorcos/xtal.
+# Mantiene Formula/xtal.rb y Casks/xtal-app.rb apuntando a la última Release de
+# mcorcos/xtal: la CLI y la app de escritorio de macOS, que se publican juntas y
+# van clavadas a la misma version.
 #
 # ¿Por qué el tap se actualiza solo en vez de que el repo principal le pushee la
 # fórmula? Porque escribir desde otro repositorio necesita un Personal Access Token
@@ -8,7 +10,7 @@
 #
 # El costo es que la fórmula puede tardar hasta una hora en reflejar una Release nueva.
 # Para que salga ya, se dispara el workflow a mano (Actions -> Run workflow).
-name: Actualizar la fórmula
+name: Actualizar la fórmula y el cask
 
 on:
   schedule:
@@ -28,7 +30,7 @@ concurrency:
 
 jobs:
   update:
-    name: regenerar Formula/xtal.rb
+    name: regenerar la fórmula y el cask
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -52,17 +54,30 @@ jobs:
           echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
           echo "Última version publicada: ${TAG}"
 
-      - name: Renderizar la fórmula
+      - name: Renderizar la fórmula y el cask
         env:
           VERSION: ${{ steps.v.outputs.version }}
         run: |
           set -euo pipefail
-          # La plantilla vive en el repo principal: un solo lugar donde tocarla.
-          curl -fsSL -o /tmp/render-formula.sh \
-            https://raw.githubusercontent.com/mcorcos/xtal/main/packaging/homebrew/render-formula.sh
-          mkdir -p Formula
+          # Las plantillas viven en el repo principal: un solo lugar donde tocarlas.
+          BASE=https://raw.githubusercontent.com/mcorcos/xtal/main/packaging/homebrew
+          curl -fsSL -o /tmp/render-formula.sh "$BASE/render-formula.sh"
+          curl -fsSL -o /tmp/render-cask.sh    "$BASE/render-cask.sh"
+
+          mkdir -p Formula Casks
           bash /tmp/render-formula.sh "$VERSION" --from-release > Formula/xtal.rb
           cat Formula/xtal.rb
+
+          # La app de macOS empezó a publicarse después que la CLI: en una Release
+          # vieja su zip no existe y el script corta. Eso NO puede tumbar la
+          # actualización de la fórmula, que es lo que instala casi todo el mundo.
+          # Si el zip no está, se avisa y se sigue con el cask que ya había.
+          if bash /tmp/render-cask.sh "$VERSION" --from-release > /tmp/xtal-app.rb; then
+            mv /tmp/xtal-app.rb Casks/xtal-app.rb
+            cat Casks/xtal-app.rb
+          else
+            echo "::warning::La Release v$VERSION no publica el zip de la app de macOS: dejo el cask como estaba."
+          fi
 
       - name: Commitear si cambió algo
         env:
@@ -71,10 +86,10 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Formula/xtal.rb
-          # Si la fórmula ya apuntaba a esta version, no hay nada que commitear.
+          git add Formula/xtal.rb Casks/xtal-app.rb 2>/dev/null || git add Formula/xtal.rb
+          # Si ya apuntaban a esta version, no hay nada que commitear.
           if git diff --staged --quiet; then
-            echo "La fórmula ya está en ${VERSION}: no hago nada."
+            echo "La fórmula y el cask ya están en ${VERSION}: no hago nada."
             exit 0
           fi
           git commit -m "xtal ${VERSION}"
