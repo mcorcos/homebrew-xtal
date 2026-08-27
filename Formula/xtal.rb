@@ -3,34 +3,39 @@
 class Xtal < Formula
   desc "Análisis de circuitos y consolidación de datos en informes LaTeX"
   homepage "https://github.com/mcorcos/xtal"
-  version "0.3.2"
+  version "0.5.0"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/mcorcos/xtal/releases/download/v0.3.2/xtal-0.3.2-aarch64-apple-darwin.tar.gz"
-      sha256 "9fe35a26dc8f902cd3895dcf1d2ae958b235e9b659ff899e53f608400a77a6b1"
+      url "https://github.com/mcorcos/xtal/releases/download/v0.5.0/xtal-0.5.0-aarch64-apple-darwin.tar.gz"
+      sha256 "2adab77d26bcb480402c8f98532aaa4408a64af6635ac31e6f2960941bdc0da8"
     end
     on_intel do
-      url "https://github.com/mcorcos/xtal/releases/download/v0.3.2/xtal-0.3.2-x86_64-apple-darwin.tar.gz"
-      sha256 "406bb3d100f613447dbafe041e2c1c1b3fe48c71d84ece16b1a8ade6dc6e63b8"
+      url "https://github.com/mcorcos/xtal/releases/download/v0.5.0/xtal-0.5.0-x86_64-apple-darwin.tar.gz"
+      sha256 "0557ebf01f4e71cf1835cd8d709208992bb3c40460d434f8e515d42a55ee3a6a"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/mcorcos/xtal/releases/download/v0.3.2/xtal-0.3.2-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "4eabbc43043610b4926978bace34251e3eb7a9db614fbdd6a2764066a2006ff4"
+      url "https://github.com/mcorcos/xtal/releases/download/v0.5.0/xtal-0.5.0-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "0e499a3eb802bdaedd1808810cfd4b9c8b8089275eae984992ef8b90dd887b2b"
     end
     on_intel do
-      url "https://github.com/mcorcos/xtal/releases/download/v0.3.2/xtal-0.3.2-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "daab1aa2e49856152e9abe7ce0df2d632675a7f9fe18454e0d968eddeebd5836"
+      url "https://github.com/mcorcos/xtal/releases/download/v0.5.0/xtal-0.5.0-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "59ab85fb5f14ac25bea3bd01ceb1bae7a94f9507931589f742f1eada0768fb7b"
     end
   end
 
-  # Tectonic es el motor LaTeX: sin él, `xtal run` no compila el PDF. Es la única
-  # dependencia obligatoria. ngspice (simulación) queda opcional a propósito: no
-  # todo el mundo simula, y es un paquete pesado. `xtal doctor` avisa si falta.
+  # Las dos dependencias externas de Xtal, y las dos van adentro de la fórmula a
+  # propósito: **un comando tiene que dejar todo andando**. Antes ngspice quedaba
+  # afuera "porque no todo el mundo simula", y el resultado era que el que sí simulaba
+  # se enteraba de que le faltaba recién cuando `xtal sim` fallaba, a mitad del TP.
+  #
+  #   tectonic — motor LaTeX. Sin él `xtal run` no compila el PDF.
+  #   ngspice  — simulador. Sin él `xtal sim` no corre.
+  depends_on "ngspice"
   depends_on "tectonic"
 
   def install
@@ -43,14 +48,14 @@ class Xtal < Formula
 
   def caveats
     <<~EOS
-      Para simular circuitos hace falta ngspice:
-        brew install ngspice
+      Ya está todo: el motor LaTeX (tectonic) y el simulador (ngspice) vinieron
+      con esta fórmula, y la configuración se escribe sola en el primer comando.
 
-      Configurá Xtal en esta máquina (theme, formato, warmup de Tectonic):
-        xtal setup
+      Empezá por acá:
+        xtal example --open
 
-      Para usarlo desde Claude Desktop o Codex:
-        xtal mcp install --client claude-desktop
+      ¿Querés la app de escritorio?
+        brew install --cask mcorcos/xtal/xtal-app
     EOS
   end
 
