@@ -3,28 +3,28 @@
 class Xtal < Formula
   desc "Análisis de circuitos y consolidación de datos en informes LaTeX"
   homepage "https://github.com/mcorcos/xtal"
-  version "0.5.0"
+  version "0.6.0"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/mcorcos/xtal/releases/download/v0.5.0/xtal-0.5.0-aarch64-apple-darwin.tar.gz"
-      sha256 "2adab77d26bcb480402c8f98532aaa4408a64af6635ac31e6f2960941bdc0da8"
+      url "https://github.com/mcorcos/xtal/releases/download/v0.6.0/xtal-0.6.0-aarch64-apple-darwin.tar.gz"
+      sha256 "e3ac6e203e2c345ab326f8c6edf9e7f209a5d6ba5fb5295b6e55d7b2e9189a76"
     end
     on_intel do
-      url "https://github.com/mcorcos/xtal/releases/download/v0.5.0/xtal-0.5.0-x86_64-apple-darwin.tar.gz"
-      sha256 "0557ebf01f4e71cf1835cd8d709208992bb3c40460d434f8e515d42a55ee3a6a"
+      url "https://github.com/mcorcos/xtal/releases/download/v0.6.0/xtal-0.6.0-x86_64-apple-darwin.tar.gz"
+      sha256 "3f7514955c2f215b26dde9137c1d32036907650f56cebbe8868a20fc5d389f59"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/mcorcos/xtal/releases/download/v0.5.0/xtal-0.5.0-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "0e499a3eb802bdaedd1808810cfd4b9c8b8089275eae984992ef8b90dd887b2b"
+      url "https://github.com/mcorcos/xtal/releases/download/v0.6.0/xtal-0.6.0-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "617028416e85a92a345133bb581df4b627338601d88d7e1e05b52361816a526b"
     end
     on_intel do
-      url "https://github.com/mcorcos/xtal/releases/download/v0.5.0/xtal-0.5.0-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "59ab85fb5f14ac25bea3bd01ceb1bae7a94f9507931589f742f1eada0768fb7b"
+      url "https://github.com/mcorcos/xtal/releases/download/v0.6.0/xtal-0.6.0-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "a6a9c91dddb2b8b107cfa7b5625317da62076a4b83ad7def255321d862fdfd18"
     end
   end
 

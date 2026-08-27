@@ -1,10 +1,10 @@
 # Cask generado automáticamente por packaging/homebrew/render-cask.sh.
 # No lo edites a mano: los cambios se pisan en el próximo release.
 cask "xtal-app" do
-  version "0.5.0"
-  sha256 "80e9c686c20efb7f846fc580ebe29bb9678a410033c852a23bf7c88fce1263fe"
+  version "0.6.0"
+  sha256 "0b9b5de1e54054115627b6fecff67389efbab3e0ff43437be42ab896e077c5e8"
 
-  url "https://github.com/mcorcos/xtal/releases/download/v0.5.0/Xtal-#{version}-macos.zip"
+  url "https://github.com/mcorcos/xtal/releases/download/v0.6.0/Xtal-#{version}-macos.zip"
   name "Xtal"
   desc "Editor e informes de electrónica: escribís, compilás y ves el PDF al lado"
   homepage "https://github.com/mcorcos/xtal"
